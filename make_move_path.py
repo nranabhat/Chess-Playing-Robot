@@ -24,7 +24,7 @@ board_height = config['board']['height']
 origin = np.array([config['origin']['x'], config['origin']['y'], config['origin']['z']])
 piece_height = config['piece']['height']
 # offset x 
-x_offset = 0.01
+x_offset = origin[0]
 
 # Function to convert chess square to coordinates
 def square_to_coord(square):
