@@ -58,7 +58,7 @@ def manual_endpoint_location():
 
         # Compute Inverse Kinematics
         # ang = IK.armrobinvkin(xyz_goal)
-        ang = NIK.calculate_angles(xyz_goal, angle_guess=[0,0,0])
+        ang = NIK.nico_IK(xyz_goal, angle_guess=[0,0,0])
         
         # Compute limited joint angles. 
         ang_lim = ang

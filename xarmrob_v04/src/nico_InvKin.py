@@ -31,9 +31,12 @@ def calculate_angles(endpoint, angle_guess):
 
 def nico_IK(endpoint, angle_guess):
     """ Params: enpoint: list [x,y,z]
-                angle_guesses: list [x0,y0,z0] """
+                angle_guesses: list [x0,y0,z0] 
+                
+        Retern: angles: float array of [alpha,b1,b2,g1,b3,g2]"""
     beta_angles = calculate_angles(endpoint, angle_guess).x
     alpha = np.arctan2(endpoint[1], endpoint[0])
     angles = [alpha, beta_angles[0], beta_angles[1], 0, beta_angles[2], 0]
+
     return np.asfarray(angles)
 
