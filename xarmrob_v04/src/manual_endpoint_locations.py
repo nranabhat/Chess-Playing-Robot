@@ -7,6 +7,7 @@ from sensor_msgs.msg import JointState
 
 import FwdKinArmRob_serial as FK
 import InvKinArmRob_serial as IK
+import nico_InvKin as NIK
 
 # Load parameters from rosparam to keep handy for the functions below: 
 # Matched lists of angles and microsecond commands
@@ -56,7 +57,8 @@ def manual_endpoint_location():
         ## inside the While loop, to move to the new angles gradually          
 
         # Compute Inverse Kinematics
-        ang = IK.armrobinvkin(xyz_goal)
+        # ang = IK.armrobinvkin(xyz_goal)
+        ang = NIK.calculate_angles(xyz_goal, angle_guess=[0,0,0])
         
         # Compute limited joint angles. 
         ang_lim = ang
