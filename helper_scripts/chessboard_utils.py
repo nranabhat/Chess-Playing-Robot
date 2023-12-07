@@ -1,12 +1,13 @@
 """
-Chess Robot Movement Path Generator
+chessboard_utils
 
 This script calculates the movement path for a robotic arm designed to move chess pieces on a chessboard. The script reads configuration details such as the board's dimensions and piece height from a YAML file and uses these to generate a 3D path that the robot will follow to move a chess piece from one square to another.
 
+Orientation: 
 The board is oriented such that the A1 square has the largest y-value and the smallest x-value, while the H8 square has the smallest y-value and the largest x-value. The script takes into account the height of the pieces, ensuring the robot arm moves just below the top of the piece for picking and dropping.
 
 Usage:
-Module to output a numpy array representing the robot's movement path.
+load the board config by calling load_config then pass this into make_move_path along with a starting and ending point (e.g. A7) to get a numpy array representing the robot's movement path.
 
 Author: nranabhat
 Date: 12/6/23
