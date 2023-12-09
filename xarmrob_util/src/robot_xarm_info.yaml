@@ -2,9 +2,9 @@
 # Frequency to compute new commands (Hz) 
 command_frequency: 10
 # Speed for controlled movement
-endpoint_speed: 0.05
+endpoint_speed: 0.5
 # Height offset (for safety: do dry runs in the air: suggest 0.02 m up)
-vertical_offset: 0.2
+vertical_offset: 0.02
 # Sign of positive rotations w.r.t. the +y axis
 y_rotation_sign: 1 # Could otherwise be -1 if using 'positive rotations about the -y axis'
 # Indices and ID numbers of the Hiwonder Bus Servos, from base to tip
@@ -27,7 +27,7 @@ rotational_limits_joint_23: [0,180]
 rotational_limits_joint_34: [-110,110]
 rotational_limits_joint_45: [-100,100]
 rotational_limits_joint_56: [-110,111]
-gripper_limits: [0,90] # Gripper Opening Limits (deg) - 0 is closed, 90 is open. 
+gripper_limits: [0,90] # Gripper Opening Limits (deg) - 90 is closed, 0 is open. 
 # Rotational Axis degrees-to-commands mapping
 # (commands range 0 to 1000)
 rotational_angles_for_mapping_joint_01: [-90,0,90]
