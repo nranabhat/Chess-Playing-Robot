@@ -1,0 +1,16 @@
+# robot.yaml
+
+board:
+  width: 0.18 # meters
+  height: 0.18 # meters
+
+origin:
+  x: 0.01
+  y: 0.0
+  z: 0.1
+
+piece:
+  height: 0.03 # meters
+  diameter: 0.01 # meters
+
+
