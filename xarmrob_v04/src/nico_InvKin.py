@@ -20,23 +20,23 @@ def endpoint_error(angles, args):
     return error
 
 def calculate_angles(endpoint, angle_guess):
-    bounds = [(-np.pi/2, 0),  # Bounds for beta1
+    bounds = [(-3*np.pi/4, 0),  # Bounds for beta1
             (0, np.pi),  # Bounds for beta2
             (0, np.pi/2)]  # Bounds for beta3. have gripper above the pieces
 
     # Perform the optimization with bounds
-    calculated_beta_angles = optimize.minimize(endpoint_error, angle_guess, args=(endpoint), method="Powell", bounds=bounds)
+    calculated_beta_angles = optimize.minimize(endpoint_error, angle_guess, args=(endpoint), method="SLSQP", bounds=bounds)
 
     return calculated_beta_angles
 
-def nico_IK(endpoint, angle_guess):
+def nico_IK(endpoint):
     """ Params: enpoint: list [x,y,z]
                 angle_guesses: list [x0,y0,z0] 
                 
         Retern: angles: float array of [alpha,b1,b2,g1,b3,g2]"""
+    angle_guess = [-np.pi/4, np.pi/2, np.pi/4]
     beta_angles = calculate_angles(endpoint, angle_guess).x
     alpha = np.arctan2(endpoint[1], endpoint[0])
     angles = [alpha, beta_angles[0], beta_angles[1], 0, beta_angles[2], 0]
-
+   
     return np.asfarray(angles)
-

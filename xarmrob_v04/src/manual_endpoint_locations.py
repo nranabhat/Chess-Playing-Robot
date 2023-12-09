@@ -37,28 +37,36 @@ joint_angles_desired_msg = JointState()
 joint_angles_desired_msg.name = ['base_joint', 'shoulder_joint', 'elbow_joint', 'forearm_joint', 'wrist_joint', 'fingers_joint', 'gripper'];
 joint_angles_desired_msg.position = cmds      # upright neutral position
 
+# Nico's helper funciton
+def linear_interpolate(start, end, steps):
+    return [start + (end - start) * t for t in np.linspace(0, 1, steps)]
+
 
 def manual_endpoint_location(): 
     
     rospy.init_node('manual_endpoint_locations',anonymous=False)
     
+#    current_position = np.array([0.1, 0.0, 0.02])  # Initialize current position, update with actual robot's initial position
+
     while not rospy.is_shutdown(): 
-        
         try: 
-            xyz_goal = np.array(list(map(float,input('\nEnter Endpoint Location (comma separated, no brackets, in meters). \n    Ctrl-C and Enter to exit.\nx, y, z:\n').split(',') ) ) )
+            # Prompt for a single endpoint
+            xyz_goal = np.array(list(map(float, input('\nEnter Endpoint Location (comma separated, no brackets, in meters). \n    Ctrl-C and Enter to exit.\nx, y, z:\n').split(','))))
         except: 
             rospy.loginfo('Bad Entry, try again!')
             continue
         print('Target {}'.format(xyz_goal))
-        
-        ## MODIFY HERE
-        ## For continuous motion, set up a series of points and publish at a constant rate. 
-        ## Use a r=rospy.Rate() object and r.sleep()
-        ## inside the While loop, to move to the new angles gradually          
 
-        # Compute Inverse Kinematics
-        # ang = IK.armrobinvkin(xyz_goal)
-        ang = NIK.nico_IK(xyz_goal, angle_guess=[0,0,0])
+        # MODIFY HERE
+        # Generate a smooth trajectory to the new point
+#        trajectory = linear_interpolate(current_position, xyz_goal, steps=20)  # Adjust 'steps' for desired smoothness
+#
+#        r = rospy.Rate(20)  # Adjust the rate as needed for smoothness
+#
+#        for point in trajectory:
+#            # Compute Inverse Kinematics for each intermediate point
+        #ang = IK.armrobinvkin(np.array(xyz_goal))
+        ang = NIK.nico_IK(np.array(xyz_goal))
         
         # Compute limited joint angles. 
         ang_lim = ang
@@ -94,7 +102,10 @@ def manual_endpoint_location():
         rospy.loginfo('Moving to {}'.format(ang_lim))
         rospy.loginfo('Predicted location: \n{}'.format(xyz_pred))
             
-            
+#        r.sleep()
+        
+#    current_position = xyz_goal  # Update the current position to the new endpoint
+                
 
 if __name__ == "__main__":
     try:
