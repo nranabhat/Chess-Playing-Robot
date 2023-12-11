@@ -40,6 +40,29 @@ joint_angles_desired_msg.name = ['base_joint', 'shoulder_joint', 'elbow_joint', 
 joint_angles_desired_msg.position = cmds      # upright neutral position
 
 
+def move_gripper(arm_angles, point_index):
+    """ 
+        Params: arm_angle - list of angles in radians corresponding to [alpha, b1, b2, g1, b3, g2]
+                point_index - int from 0 to 5 indicating which point in the path
+
+        Returns: ang_lim list of [alpha, b1, b2, g1, b3, g2, gripper] angles 
+     """
+    # determine gripper_angle - float angle of gripper from 0: open to 90: closed
+    if point_index < 2:
+        gripper_angle = np.pi/4 # open
+    if point_index >= 2 and point_index <= 5: # transitioning piece 
+        gripper_angle = 60/90 * np.pi/2 # 70 degrees (closed)
+    if point_index >= 6:
+        gripper_angle = np.pi/4 # open
+
+    ang_lim = np.append(arm_angles, gripper_angle) ## append a Gripper angle. This needs updating. 
+    joint_angles_desired_msg.position = ang_lim 
+    joint_angles_desired_msg.header.stamp = rospy.Time.now()
+    pub_joint_angles_desired.publish(joint_angles_desired_msg)
+    rospy.loginfo('Moving to gripper to '+str(np.degrees(gripper_angle))+ ' degrees')
+    # rospy.loginfo('Predicted location: \n{}'.format(xyz_pred))
+    return ang_lim
+
 def manual_endpoint_location(): 
     
     rospy.init_node('manual_endpoint_locations',anonymous=False)
@@ -47,13 +70,6 @@ def manual_endpoint_location():
     current_position = np.array([0.1, 0.0, 0.08])  # Initialize current position, update with actual robot's initial position
 
     while not rospy.is_shutdown(): 
-        # try: 
-        #     # Prompt for a single endpoint
-        #     xyz_goal = np.array(list(map(float, input('\nEnter Endpoint Location (comma separated, no brackets, in meters). \n    Ctrl-C and Enter to exit.\nx, y, z:\n').split(','))))
-        # except: 
-        #     rospy.loginfo('Bad Entry, try again!')
-        #     continue
-        # print('Target {}'.format(xyz_goal))
 
         try:
             # Load the chessboard configuration and calculate the move path
@@ -69,8 +85,9 @@ def manual_endpoint_location():
 
 
         # Loop through the move path and compute IK for each point
+        j = 0 # index that will go from 0 to 5 to indicate point in path.
         for xyz_goal in move_path:
-
+            
             # Generate a minimum jerk trajectory to the new point
             _, trajectory = smooth.minimum_jerk_interpolation(current_position, xyz_goal, 
                                                             endpoint_speed=0.5, command_frequency=45)
@@ -106,14 +123,18 @@ def manual_endpoint_location():
                     
                 # If the program gets here it has been told to go ahead. 
                 # Move to endpoint. 
-                ang_lim = np.append(ang_lim, 0.) ## append a Gripper angle. This needs updating. 
+                
+                #ang_lim = np.append(ang_lim, 0.) ## append a Gripper angle. This needs updating. 
+                ang_lim = move_gripper(ang_lim, j)
                 joint_angles_desired_msg.position = ang_lim 
                 joint_angles_desired_msg.header.stamp = rospy.Time.now()
                 pub_joint_angles_desired.publish(joint_angles_desired_msg)
                 rospy.loginfo('Moving to {}'.format(ang_lim))
                 rospy.loginfo('Predicted location: \n{}'.format(xyz_pred))
-                
+
                 r.sleep()
+
+            j += 1
             
             current_position = xyz_goal  # Update the current position to the new endpoint
                 
