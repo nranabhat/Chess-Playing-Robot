@@ -2,15 +2,15 @@
 
 board:
   width: 0.18 # meters
-  height: 0.18 # meters
+  height: 0.165 # meters
 
 origin:
-  x: 0.1
+  x: 0.105
   y: 0.0
   z: 0.1
 
 piece:
-  height: 0.05 # meters. piece =0.03, board = 0.02
+  height: 0.07 # meters. piece =0.03, board = 0.02
   diameter: 0.01 # meters
 
 
