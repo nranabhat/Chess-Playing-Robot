@@ -51,11 +51,11 @@ def move_gripper(arm_angles, point_index):
     if point_index < 3:
         gripper_angle = np.pi/4 # open
     if point_index >= 3 and point_index <= 5: # transitioning piece 
-        gripper_angle = 60/90 * np.pi/2 # 70 degrees (closed)
+        gripper_angle = 80/90 * np.pi/2 # 70 degrees (closed)
     if point_index >= 6:
         gripper_angle = np.pi/4 # open
 
-    ang_lim = np.append(arm_angles, gripper_angle) ## append a Gripper angle. 
+    ang_lim = np.append(arm_angles, gripper_angle) ## append a Gripper angle. This needs updating. 
     joint_angles_desired_msg.position = ang_lim 
     joint_angles_desired_msg.header.stamp = rospy.Time.now()
     pub_joint_angles_desired.publish(joint_angles_desired_msg)
